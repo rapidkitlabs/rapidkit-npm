@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.42.4] - 2026-08-09
+
+### Security
+
+- Updated compatible transitive releases of `brace-expansion`, `fast-uri`,
+  `ip-address`, and `js-yaml` for current denial-of-service, host-confusion,
+  and SSRF/trust-boundary advisories.
+- Updated Nano ID to `5.1.16` for Estimo and Size Limit Webpack, and to `3.3.18`
+  for PostCSS, preserving each consumer's supported major line.
+- Kept Size Limit on v12 and avoided npm's breaking downgrade suggestion.
+
+### Fixed
+
+- Made the pre-commit contract gate staged-aware so unrelated local contract
+  work cannot block a focused commit.
+- Removed automatic contract regeneration and cross-repository staging from
+  pre-commit; full contract parity remains enforced by CI and release gates.
+
+### Verification
+
+- `npm audit --audit-level=moderate`
+- `npm run validate`
+- `npm run build`
+- `npm run size-check`
+- 164 test files and 1,652 tests passed; 8 tests were explicitly skipped.
+- Bundle size remained 68.68 kB against the 200 kB limit.
+
 ## [0.42.3] - 2026-07-25
 
 ### Security

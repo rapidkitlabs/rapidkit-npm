@@ -9,7 +9,7 @@ function read(relativePath: string): string {
 }
 
 describe('shared contracts workflow (Wave A + B)', () => {
-  it('uses one npm-owned script to generate, sync, and validate shared extension contracts', () => {
+  it('keeps explicit sync tooling while pre-commit remains staged-aware and check-only', () => {
     const npmPackage = JSON.parse(read('package.json'));
     const syncScript = read('scripts/sync-shared-contracts.mjs');
     const preCommit = read('.husky/pre-commit');
@@ -33,7 +33,9 @@ describe('shared contracts workflow (Wave A + B)', () => {
     expect(syncScript).toContain('infra-stack.v1.json');
     expect(syncScript).toContain('--stage-git');
     expect(syncScript).toContain('stageSyncedContracts');
-    expect(preCommit).toContain('sync:shared-contracts -- --stage-git');
+    expect(preCommit).toContain('git diff --cached --name-only');
     expect(preCommit).toContain('npm run validate:contracts');
+    expect(preCommit).toContain('no related staged changes');
+    expect(preCommit).not.toContain('sync:shared-contracts -- --stage-git');
   });
 });

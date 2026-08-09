@@ -1,6 +1,54 @@
 # Release Notes
 
-## Latest Release: v0.42.3 (July 25, 2026)
+## Latest Release: v0.42.4 (August 9, 2026)
+
+### Dependency Security Maintenance
+
+This patch removes the current npm advisories from the legacy `rapidkit`
+compatibility CLI without changing runtime commands or downgrading the v12
+build toolchain.
+
+**Security:**
+
+- Updated `brace-expansion`, `fast-uri`, `ip-address`, and `js-yaml` to
+  compatible patched releases.
+- Updated the Nano ID branches used by Estimo, Size Limit Webpack, and PostCSS
+  without crossing their supported major versions.
+- Kept `@size-limit/preset-big-lib` on v12 instead of accepting npm's breaking
+  downgrade recommendation.
+- `npm audit --audit-level=moderate` reports zero vulnerabilities.
+
+**Commit safety:**
+
+- Contract checks now run in pre-commit only for related staged changes.
+- Pre-commit no longer regenerates, stages, or mutates contract files in this
+  repository or a sibling extension repository.
+- Full contract parity remains enforced by CI and release validation.
+
+**Breaking changes:** None.
+
+**Verification:**
+
+- `npm audit --audit-level=moderate`
+- `npm run validate`
+- `npm run build`
+- `npm run size-check`
+- 164 test files and 1,652 tests passed; 8 tests remained explicitly skipped.
+- Bundle size remained 68.68 kB against the 200 kB limit.
+
+**Upgrade:**
+
+```bash
+npm install -g rapidkit@0.42.4
+```
+
+New projects should install and use `workspai` instead.
+
+[Full Release Notes](./releases/RELEASE_NOTES_v0.42.4.md)
+
+---
+
+## Previous Release: v0.42.3 (July 25, 2026)
 
 ### Secure Compatibility and Workspai Migration
 

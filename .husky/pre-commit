@@ -12,35 +12,39 @@ npx lint-staged || exit 1
 echo "💅 Checking code formatting..."
 npm run format:check || exit 1
 
-# Contracts sync check (only when Core schema is available)
-if [ -n "${RAPIDKIT_CORE_SCHEMA_PATH:-}" ] && [ -f "${RAPIDKIT_CORE_SCHEMA_PATH}" ]; then
-	echo "🔗 Checking Core ↔ NPM contracts..."
-	npm run check:contracts || exit 1
-elif [ -f "../core/docs/contracts/rapidkit-cli-contracts.json" ]; then
-	echo "🔗 Checking Core ↔ NPM contracts (monorepo)..."
-	RAPIDKIT_CORE_SCHEMA_PATH="../core/docs/contracts/rapidkit-cli-contracts.json" npm run check:contracts || exit 1
-elif [ -f "../../core/docs/contracts/rapidkit-cli-contracts.json" ]; then
-	echo "🔗 Checking Core ↔ NPM contracts (monorepo)..."
-	RAPIDKIT_CORE_SCHEMA_PATH="../../core/docs/contracts/rapidkit-cli-contracts.json" npm run check:contracts || exit 1
+# Contract checks are scoped to staged contract work. Running full-tree sync from
+# pre-commit can accidentally stage unrelated working-tree changes (or mutate a
+# sibling repository). CI and release quality gates still enforce full parity.
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR)
+
+if printf '%s\n' "$STAGED_FILES" | grep -Eq '^(docs/contracts/rapidkit-cli-contracts\.json|scripts/sync-contracts\.mjs)$'; then
+	if [ -n "${RAPIDKIT_CORE_SCHEMA_PATH:-}" ] && [ -f "${RAPIDKIT_CORE_SCHEMA_PATH}" ]; then
+		echo "🔗 Checking staged Core ↔ NPM contract work..."
+		npm run check:contracts || exit 1
+	elif [ -f "../core/docs/contracts/rapidkit-cli-contracts.json" ]; then
+		echo "🔗 Checking staged Core ↔ NPM contract work (monorepo)..."
+		RAPIDKIT_CORE_SCHEMA_PATH="../core/docs/contracts/rapidkit-cli-contracts.json" npm run check:contracts || exit 1
+	elif [ -f "../../core/docs/contracts/rapidkit-cli-contracts.json" ]; then
+		echo "🔗 Checking staged Core ↔ NPM contract work (monorepo)..."
+		RAPIDKIT_CORE_SCHEMA_PATH="../../core/docs/contracts/rapidkit-cli-contracts.json" npm run check:contracts || exit 1
+	else
+		echo "ℹ️ Skipping Core contract check (Core schema not found)"
+	fi
 else
-	echo "ℹ️ Skipping contracts check (core schema not found)"
+	echo "ℹ️ Skipping Core contract check (no related staged changes)"
 fi
 
-# Shared contracts (canonical: rapidkit-npm/contracts/)
-echo "📋 Syncing shared contracts..."
-npm run sync:shared-contracts -- --stage-git || {
-	echo "❌ Contract sync failed."
-	echo "   Run: npm run sync:shared-contracts"
-	exit 1
-}
-
-echo "📋 Validating shared contracts..."
-npm run validate:contracts || {
-	echo "❌ Contract validation failed."
-	echo "   1. Change code or run: npm run sync:shared-contracts"
-	echo "   2. Commit contracts/ in rapidkit-npm and rapidkit-vscode"
-	exit 1
-}
+if printf '%s\n' "$STAGED_FILES" | grep -Eq '^(contracts/|src/contracts/|src/utils/(kit-registry|project-command-capabilities|support-matrix|workspace-command-surface)\.ts$|src/frontend-project\.ts$|scripts/(generate-shared-contracts|run-generate-shared-contracts|sync-shared-contracts)\.(mjs|ts)$)'; then
+	echo "📋 Validating staged shared-contract work..."
+	npm run validate:contracts || {
+		echo "❌ Contract validation failed."
+		echo "   Regenerate explicitly with: npm run sync:shared-contracts"
+		echo "   Then review and stage only the intended contract changes."
+		exit 1
+	}
+else
+	echo "ℹ️ Skipping shared-contract validation (no related staged changes)"
+fi
 
 # Tests
 echo "🧪 Running tests..."
