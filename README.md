@@ -6,10 +6,10 @@
 [![Organization: Chistiq](https://img.shields.io/badge/Organization-Chistiq-111111?style=flat-square)](https://github.com/chistiq)
 
 > [!IMPORTANT]
-> `rapidkit` is the legacy npm compatibility package. It remains available for
-> existing users and automation during the migration window, but it is planned
-> for deprecation in a future release. New projects and new integrations should
-> use [Workspai](https://www.npmjs.com/package/workspai).
+> `rapidkit` is deprecated. Version `0.42.5` is its final security maintenance
+> release. Existing users should migrate to
+> [Workspai](https://www.npmjs.com/package/workspai); new projects and
+> integrations must start there.
 
 RapidKit helped establish the workspace-oriented CLI that now continues in
 Workspai. This repository is maintained for compatibility, security fixes, and
@@ -130,19 +130,17 @@ canonical Workspai equivalents and newer `.workspai` artifacts live in the
 Command names may look similar, but migration is not a directory rename. Run
 Workspai so it can create and validate the canonical contracts.
 
-## Compatibility and maintenance policy
+## Deprecation and maintenance status
 
-During the migration window this repository accepts:
+This repository and the `rapidkit` npm package were deprecated on September 1,
+2026. No new features, compatibility releases, or user journeys are planned.
+The repository remains available as a read-only migration and security-history
+record.
 
-- security and dependency updates;
-- critical compatibility and cross-platform fixes;
-- contract-bridge corrections needed by existing consumers;
-- migration documentation and regression tests.
-
-New Workspace Intelligence features, new public integrations, and new user
-journeys belong in [chistiq/workspai](https://github.com/chistiq/workspai).
-No final deprecation date is declared here; it will be announced explicitly
-before the npm package is marked deprecated.
+All active development belongs in
+[chistiq/workspai](https://github.com/chistiq/workspai). See the
+[deprecation notice](DEPRECATION.md) and
+[migration guide](docs/MIGRATING_TO_WORKSPAI.md) for the supported transition.
 
 ## Legacy documentation
 
@@ -183,10 +181,10 @@ corepack npm run validate:docs
 corepack npm run validate:contracts
 ```
 
-Workflow ownership is documented in
-[docs/ci-workflows.md](docs/ci-workflows.md). Current CI includes the build and
-test matrix, workspace E2E, Windows bridge E2E, package smoke, and security
-audit.
+The final CI definitions are retained as non-executable history under
+`.github/archived-workflows/`. GitHub Actions are disabled for this deprecated
+repository; local validation remains documented in
+[docs/ci-workflows.md](docs/ci-workflows.md).
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) before proposing a change. Feature work
 that targets the canonical CLI should be opened against

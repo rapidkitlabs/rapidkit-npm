@@ -8627,10 +8627,10 @@ function printHelpSectionDivider(title: string): void {
 }
 
 function printMigrationNotice(): void {
-  console.log(chalk.yellow('Migration notice: rapidkit is moving to Workspai.'));
+  console.log(chalk.yellow('Deprecation notice: rapidkit has moved to Workspai.'));
   console.log(
     chalk.gray(
-      'The rapidkit npm package is in compatibility mode and is planned for deprecation in a future release.'
+      'The rapidkit npm package is deprecated. Version 0.42.5 is its final security maintenance release.'
     )
   );
   console.log(chalk.gray('New installs should use:'));

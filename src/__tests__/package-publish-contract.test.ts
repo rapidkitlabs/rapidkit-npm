@@ -9,6 +9,7 @@ describe('npm publish contract', () => {
   ) as {
     bin?: Record<string, string>;
     description?: string;
+    devDependencies?: Record<string, string>;
     files?: string[];
     keywords?: string[];
     repository?: {
@@ -34,14 +35,28 @@ describe('npm publish contract', () => {
     expect(packageJson.bin?.['rapidkit-npm']).toBe('dist/index.js');
   });
 
-  it('positions the package as a legacy compatibility bridge to Workspai', () => {
+  it('positions the deprecated package as a migration bridge to Workspai', () => {
     expect(packageJson.description).toBe(
-      'Legacy RapidKit npm compatibility CLI for existing users and migration to Workspai. New projects should use the workspai package.'
+      'Deprecated RapidKit compatibility CLI. Migrate existing projects and automation to the workspai package.'
     );
     expect(packageJson.description?.length).toBeLessThanOrEqual(160);
     expect(packageJson.keywords).toEqual(
       expect.arrayContaining(['workspace-intelligence', 'governance', 'workspai'])
     );
+  });
+
+  it('keeps the bundle guard local and excludes the vulnerable browser measurement chain', () => {
+    expect(packageJson.scripts?.['size-check']).toBe(
+      'npm run build && node scripts/check-dist-size.mjs'
+    );
+    expect(packageJson.devDependencies).not.toHaveProperty('size-limit');
+    expect(packageJson.devDependencies).not.toHaveProperty('@size-limit/preset-big-lib');
+    expect(packageJson.files).toContain('scripts/check-dist-size.mjs');
+
+    const lockfile = fs.readFileSync(path.join(process.cwd(), 'package-lock.json'), 'utf8');
+    expect(lockfile).not.toContain('node_modules/extract-zip');
+    expect(lockfile).not.toContain('node_modules/@puppeteer/browsers');
+    expect(lockfile).not.toContain('node_modules/estimo');
   });
 
   it('builds and verifies dist before npm pack or publish', () => {
@@ -82,24 +97,19 @@ describe('npm publish contract', () => {
     }
   });
 
-  it('runs enterprise package smoke in CI and release gates', () => {
-    const ciWorkflow = fs.readFileSync(
-      path.join(process.cwd(), '.github/workflows/ci.yml'),
-      'utf8'
-    );
-    const releaseWorkflow = fs.readFileSync(
-      path.join(process.cwd(), '.github/workflows/release-npm-manual.yml'),
-      'utf8'
-    );
-    const securityWorkflow = fs.readFileSync(
-      path.join(process.cwd(), '.github/workflows/security.yml'),
-      'utf8'
-    );
+  it('keeps GitHub Actions disabled while retaining the final workflow history', () => {
+    const workflowDirectory = path.join(process.cwd(), '.github/workflows');
+    const activeWorkflows = fs
+      .readdirSync(workflowDirectory)
+      .filter((entry) => /\.ya?ml$/i.test(entry));
+    expect(activeWorkflows).toEqual([]);
 
-    expect(ciWorkflow).toContain('npm run smoke:enterprise-package');
-    expect(releaseWorkflow).toContain('npm run smoke:enterprise-package');
-    expect(releaseWorkflow).toContain('npm run test:prepare-embeddings');
-    expect(securityWorkflow).toContain('npm audit --audit-level=high');
+    for (const workflow of ['ci.yml', 'release-npm-manual.yml', 'security.yml']) {
+      expect(
+        fs.existsSync(path.join(process.cwd(), '.github/archived-workflows', workflow)),
+        workflow
+      ).toBe(true);
+    }
   });
 
   it('publishes migration guidance and validates any npm README image assets', () => {
@@ -108,7 +118,10 @@ describe('npm publish contract', () => {
       ...readme.matchAll(/!\[[^\]]+\]\((https:\/\/raw\.githubusercontent\.com\/[^)]+)\)/g),
     ].map((match) => match[1]);
 
-    expect(readme).toContain('`rapidkit` is the legacy npm compatibility package');
+    expect(readme).toContain('`rapidkit` is deprecated');
+    expect(readme).toContain('Version `0.42.5` is its final security maintenance');
+    expect(packageJson.files).toContain('DEPRECATION.md');
+    expect(fs.existsSync(path.join(process.cwd(), 'DEPRECATION.md'))).toBe(true);
     expect(readme).toContain('https://github.com/chistiq/workspai');
     expect(readme).toContain('docs/MIGRATING_TO_WORKSPAI.md');
     expect(isPublishedByFiles('docs/MIGRATING_TO_WORKSPAI.md')).toBe(true);

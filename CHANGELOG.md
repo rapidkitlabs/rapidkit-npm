@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.42.5] - 2026-09-01
+
+### Security
+
+- Removed `@size-limit/preset-big-lib`, Size Limit, Estimo, Puppeteer, and the
+  vulnerable `extract-zip` dependency chain from development and CI.
+- Replaced the browser-based size tool with a dependency-free Node Brotli guard
+  that preserves the existing 200 kB compressed limit for `dist/index.js`.
+- Added a publish-contract regression that prevents the vulnerable archive
+  extraction chain from returning to the lockfile.
+
+### Deprecated
+
+- Deprecated the `rapidkit` npm package and repository in favor of `workspai`.
+- Declared `0.42.5` as the final security maintenance release and documented
+  the npm deprecation and GitHub archive closeout procedure.
+- Disabled every GitHub Actions trigger and retained the final workflow files
+  only as non-executable historical evidence.
+
+### Verification
+
+- `npm audit --audit-level=high`
+- `npm run size-check`
+- `npm run validate`
+
 ## [0.42.4] - 2026-08-09
 
 ### Security

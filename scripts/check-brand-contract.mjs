@@ -32,6 +32,10 @@ const trackedFiles = execFileSync(
 )
   .split('\0')
   .filter(Boolean)
+  // `git ls-files --cached` includes tracked files deleted in the working tree.
+  // Ignore those paths so the guard can validate a security change before it
+  // is staged, while CI still checks every file present in the checkout.
+  .filter((file) => fs.existsSync(path.join(repoRoot, file)))
   .filter((file) => file !== 'scripts/check-brand-contract.mjs')
   .filter((file) => textExtensions.has(path.extname(file).toLowerCase()));
 

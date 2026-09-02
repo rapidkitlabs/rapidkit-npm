@@ -1,8 +1,8 @@
 {
   "name": "rapidkit",
-  "version": "0.42.4",
+  "version": "0.42.5",
   "type": "module",
-  "description": "Legacy RapidKit npm compatibility CLI for existing users and migration to Workspai. New projects should use the workspai package.",
+  "description": "Deprecated RapidKit compatibility CLI. Migrate existing projects and automation to the workspai package.",
   "keywords": [
     "rapidkit",
     "workspai",
@@ -45,10 +45,12 @@
     "dist",
     "contracts",
     "docs",
+    "DEPRECATION.md",
     "templates",
     "data/modules-embeddings.json",
     "scripts/enforce-package-manager.cjs",
     "scripts/check-cli-resolution.cjs",
+    "scripts/check-dist-size.mjs",
     "scripts/check-agent-customization-drift.mjs",
     "scripts/enterprise-package-smoke.mjs",
     "scripts/prepack-enterprise.mjs"
@@ -116,7 +118,7 @@
     "check:contracts": "node scripts/sync-contracts.mjs --check",
     "bundle-size": "npm run build && node scripts/report-dist-size.mjs",
     "analyze": "npm run build && node scripts/analyze-dist.mjs",
-    "size-check": "npm run build && size-limit",
+    "size-check": "npm run build && node scripts/check-dist-size.mjs",
     "bench": "npx tsx scripts/benchmarks.ts",
     "quality": "npm run check:brand && npm run typecheck && npm run lint && npm run format:check && npm test && npm run size-check && npm run security && npm run validate:docs && npm run smoke:frontend-generators && npm run check:contracts && npm run check:shared-contracts && npm run check:parity-snapshot && npm run check:agent-customization-drift",
     "act-matrix": "act -P ubuntu-latest=ghcr.io/catthehacker/ubuntu:act-22.04 -P macos-latest=ghcr.io/catthehacker/ubuntu:act-22.04 -P windows-latest=ghcr.io/catthehacker/ubuntu:act-22.04 --pull=false -j build-test-matrix",
@@ -140,7 +142,6 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.3",
-    "@size-limit/preset-big-lib": "^12.0.0",
     "@types/cli-progress": "^3.11.6",
     "@types/fs-extra": "^11.0.4",
     "@types/inquirer": "^9.0.7",
@@ -155,7 +156,6 @@
     "husky": "^9.1.7",
     "lint-staged": "^15.5.2",
     "prettier": "^3.6.2",
-    "size-limit": "^12.0.0",
     "tsup": "^8.5.1",
     "typescript": "^5.5.0",
     "vite-bundle-visualizer": "^1.2.1",
@@ -180,12 +180,6 @@
     "fast-uri": "3.1.5",
     "ip-address": "10.4.0",
     "js-yaml": "4.3.1",
-    "estimo": {
-      "nanoid": "5.1.16"
-    },
-    "@size-limit/webpack": {
-      "nanoid": "5.1.16"
-    },
     "postcss": {
       "nanoid": "3.3.18"
     }

@@ -1,5 +1,5 @@
 blank_issues_enabled: false
 contact_links:
-  - name: RapidKit Discussions
-    url: https://github.com/chistiq/rapidkit-npm/discussions
-    about: Ask questions and discuss ideas with maintainers and the community.
+  - name: Workspai issues and discussions
+    url: https://github.com/chistiq/workspai/issues
+    about: RapidKit is deprecated; continue active product work in Workspai.

@@ -1,17 +1,19 @@
-# CI Workflows
+# Archived CI workflows
 
-Map of GitHub Actions workflows in this repository. Use this when editing CI to avoid overlapping coverage.
+GitHub Actions are disabled because this repository and npm package are
+deprecated. No YAML workflow remains under `.github/workflows/`, so pushes,
+pull requests, schedules, and manual dispatches cannot start repository jobs.
 
-## Workflows
+The final definitions are retained only as historical evidence:
 
 | Workflow                 | Path                                             | Purpose                                                                   |
 | ------------------------ | ------------------------------------------------ | ------------------------------------------------------------------------- |
-| Build / test matrix      | `.github/workflows/ci.yml`                       | Build, lint, typecheck, tests, coverage, contract gates                   |
-| Workspace E2E matrix     | `.github/workflows/workspace-e2e-matrix.yml`     | Cross-OS workspace lifecycle smoke; setup `--warm-deps`; cache/mirror ops |
-| Windows bridge E2E       | `.github/workflows/windows-bridge-e2e.yml`       | Native Windows bridge and lifecycle checks                                |
-| E2E smoke                | `.github/workflows/e2e-smoke.yml`                | Focused bridge regression smoke                                           |
-| Frontend generator smoke | `.github/workflows/frontend-generator-smoke.yml` | Official frontend generator drift gate                                    |
-| Security                 | `.github/workflows/security.yml`                 | Security scanning and policy checks                                       |
+| Build / test matrix      | `.github/archived-workflows/ci.yml`                       | Final build, lint, typecheck, tests, coverage, contract gates                   |
+| Workspace E2E matrix     | `.github/archived-workflows/workspace-e2e-matrix.yml`     | Final cross-OS workspace lifecycle smoke                                        |
+| Windows bridge E2E       | `.github/archived-workflows/windows-bridge-e2e.yml`       | Final native Windows bridge and lifecycle checks                                |
+| E2E smoke                | `.github/archived-workflows/e2e-smoke.yml`                | Final focused bridge regression smoke                                           |
+| Frontend generator smoke | `.github/archived-workflows/frontend-generator-smoke.yml` | Final official frontend generator drift gate                                    |
+| Security                 | `.github/archived-workflows/security.yml`                 | Final security scanning and policy checks                                       |
 
 ## Consumer workspace: agent grounding CI
 
@@ -42,12 +44,11 @@ Run the drift check after `agent-sync --write` so CI fails when generated agent 
 | README command smoke          | `npm run smoke:readme`                                                    |
 | Agent customization drift     | `npm run check:agent-customization-drift -- --workspace <workspace-root>` |
 
-## Recommended pre-release checks
+## Final-release validation record
 
 ```bash
 npm run validate
 npm run validate:docs
-npm run security
 npm run security
 npm run test:runtime-matrix:full
 ```

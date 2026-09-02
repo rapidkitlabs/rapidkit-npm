@@ -69,19 +69,25 @@ else
     echo "✅ Working tree is clean"
 fi
 
+if [[ -n "$BUMP" ]]; then
+    echo "❌ rapidkit@0.42.5 is the final release; version bumps are disabled." >&2
+    echo "   Continue active CLI development in https://github.com/chistiq/workspai" >&2
+    exit 1
+fi
+
 echo "🧪 Running quality checks..."
 npm run validate
 npm run build
 npm run bundle-size
 echo "✅ Quality checks passed"
 
-if [[ -n "$BUMP" ]]; then
-    echo "📌 Bumping version: $BUMP"
-    npm version "$BUMP" -m "chore(release): v%s"
-fi
-
 VERSION="$(node -p "require('./package.json').version")"
 TAG="v$VERSION"
+
+if [[ "$VERSION" != "0.42.5" ]]; then
+    echo "❌ Final release workflow only permits rapidkit@0.42.5 (found $VERSION)." >&2
+    exit 1
+fi
 
 echo "👀 Dry-run publish for $TAG"
 npm publish --dry-run

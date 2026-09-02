@@ -1,6 +1,50 @@
 # Release Notes
 
-## Latest Release: v0.42.4 (August 9, 2026)
+## Latest Release: v0.42.5 (September 1, 2026)
+
+### Final Security Maintenance Release
+
+RapidKit npm 0.42.5 removes the last known high-severity development dependency
+advisory and closes the compatibility package in favor of Workspai.
+
+**Security:**
+
+- Removed the unused browser measurement stack pulled in by
+  `@size-limit/preset-big-lib`.
+- Removed Estimo, Puppeteer, `@puppeteer/browsers`, and vulnerable
+  `extract-zip` from the dependency lock.
+- Replaced Size Limit with a dependency-free Node Brotli check that preserves
+  the existing 200 kB compressed limit for `dist/index.js`.
+
+**Deprecation:**
+
+- The `rapidkit` npm package and repository are deprecated as of September 1,
+  2026.
+- Version 0.42.5 is the final security maintenance release.
+- Existing projects should migrate with `npx workspai adopt .`.
+- GitHub Actions are disabled; final workflow definitions remain archived as
+  non-executable history.
+
+**Verification:**
+
+- `npm audit --audit-level=high`
+- `npm run size-check`
+- `npm run validate`
+
+**Final release:**
+
+```bash
+npm install -g rapidkit@0.42.5
+```
+
+The package should be used only to complete an existing migration. New work
+must use `workspai`.
+
+[Full Release Notes](./releases/RELEASE_NOTES_v0.42.5.md)
+
+---
+
+## Previous Release: v0.42.4 (August 9, 2026)
 
 ### Dependency Security Maintenance
 

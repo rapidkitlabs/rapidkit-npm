@@ -1,5 +1,11 @@
 # Contributing to rapidkit-npm
 
+> [!IMPORTANT]
+> This repository and npm package are deprecated. Version `0.42.5` is the final
+> security maintenance release. New features and fixes should target
+> [chistiq/workspai](https://github.com/chistiq/workspai). This repository is
+> retained for migration and security history and will be archived.
+
 ## Development Workflow
 
 ### Prerequisites

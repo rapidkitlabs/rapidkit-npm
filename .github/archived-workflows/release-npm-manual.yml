@@ -135,6 +135,17 @@ jobs:
       - name: Build distribution
         run: npm run build
 
+      - name: Enforce final RapidKit release
+        shell: bash
+        run: |
+          set -euo pipefail
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          if [ "${PKG_VERSION}" != "0.42.5" ]; then
+            echo "rapidkit@0.42.5 is the final release; found ${PKG_VERSION}."
+            echo "Continue active CLI development in chistiq/workspai."
+            exit 1
+          fi
+
       - name: Generate packaged embeddings
         run: npm run test:prepare-embeddings
 

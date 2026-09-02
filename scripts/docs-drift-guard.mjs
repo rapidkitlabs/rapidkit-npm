@@ -6,7 +6,9 @@ const readmePath = path.join(root, 'README.md');
 const readme = fs.readFileSync(readmePath, 'utf8');
 
 const requiredSnippets = [
-  '`rapidkit` is the legacy npm compatibility package',
+  '`rapidkit` is deprecated',
+  'Version `0.42.5` is its final security maintenance',
+  'DEPRECATION.md',
   'npx workspai adopt .',
   'npx workspai workspace intelligence run',
   'docs/MIGRATING_TO_WORKSPAI.md',
@@ -46,10 +48,18 @@ const workflowRefs = [
   'security.yml',
 ];
 for (const wf of workflowRefs) {
-  const wfPath = path.join(root, '.github', 'workflows', wf);
+  const wfPath = path.join(root, '.github', 'archived-workflows', wf);
   if (!fs.existsSync(wfPath)) {
-    errors.push(`Workflow referenced in README but missing: .github/workflows/${wf}`);
+    errors.push(`Archived workflow missing: .github/archived-workflows/${wf}`);
   }
+}
+
+const activeWorkflowDir = path.join(root, '.github', 'workflows');
+const activeWorkflows = fs
+  .readdirSync(activeWorkflowDir)
+  .filter((entry) => /\.ya?ml$/i.test(entry));
+if (activeWorkflows.length > 0) {
+  errors.push(`Deprecated repository has active GitHub workflows: ${activeWorkflows.join(', ')}`);
 }
 
 if (errors.length) {
